@@ -1,0 +1,17 @@
+/* 改变主题色变量 */
+$--color-primary: #409EFF !default;
+$--color-success: #67c23a !default;
+$--color-warning: #eb9e05 !default;
+$--color-danger: #fa5555 !default;
+$--color-info: #878d99 !default;
+$--color-label: #99a9bf;
+
+/*字体大小变量*/
+$--font-extra-small: 12px;
+$--font-small: 14px;
+$--font-medium: 16px;
+$--font-large: 18px;
+$--font-extra-large: 20px;
+
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '../../../node_modules/element-ui/lib/theme-chalk/fonts';
