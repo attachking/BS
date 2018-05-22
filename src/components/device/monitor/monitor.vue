@@ -9,7 +9,7 @@
     </el-tabs>
     <el-form :inline="true" class="demo-form-inline" ref="search">
       <el-form-item label="设备类型">
-        <el-select v-model="searchData.deviceType" placeholder="设备类型">
+        <el-select v-model="searchData.deviceType" placeholder="设备类型" clearable>
           <el-option :label="item.parameterOption" :value="item.parameterId" v-for="(item, key) in dictionaries.deviceType" :key="key"></el-option>
         </el-select>
       </el-form-item>
@@ -20,7 +20,7 @@
         </el-select>
       </el-form-item>-->
       <el-form-item label="所属项目">
-        <el-select v-model="searchData.projectId" placeholder="请选择项目" filterable>
+        <el-select v-model="searchData.projectId" placeholder="请选择项目" filterable clearable>
           <el-option :label="item.projectName" :value="item.projectId" v-for="(item, key) in projectList" :key="key"></el-option>
         </el-select>
       </el-form-item>
@@ -106,7 +106,7 @@
         label="开机状态"
         align="center">
         <template slot-scope="scope">
-          <span>{{Number(scope.row.openCounts) === 0 ? '未开机' : '已开机'}}</span>
+          <span v-html="deviceStatus(scope.row.openCounts)"></span>
         </template>
       </el-table-column>
       <el-table-column
@@ -127,9 +127,9 @@
         导出记录<i class="el-icon-arrow-down el-icon--right"></i>
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="first">按当前条件导出</el-dropdown-item>
+        <el-dropdown-item command="first">导出全部</el-dropdown-item>
         <!--<el-dropdown-item command="second">导出当前页</el-dropdown-item>-->
-        <el-dropdown-item command="third">导出当前页</el-dropdown-item>
+        <!--<el-dropdown-item command="third">导出当前页</el-dropdown-item>-->
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -216,9 +216,12 @@ export default {
       this.searchData.deviceName = ''
       this.searchData.deviceCode = ''
       this.dateRange = []
-      this.getList()
+      setTimeout(() => {
+        this.getList()
+      }, 20)
     },
     getList() {
+      if (this.loading) return
       this.loading = true
       let o = Object.assign({}, this.searchData)
       o.deviceName = encodeURIComponent(o.deviceName)
@@ -250,6 +253,7 @@ export default {
       this.selections = selections
     },
     download(search) {
+      console.log(search)
       window.open(`${BASE_URL}service/business/college/iccDevice/iccDevice/exportDeviceRecodeList.xf?${search}`)
     },
     handleCommand(e) {
@@ -257,7 +261,7 @@ export default {
         let search = []
         for (let i in this.searchData) {
           if (i !== 'currentPage' && i !== 'rowsNum') {
-            search.push(`${i}=${encodeURIComponent(this.searchData[i])}`)
+            if (this.searchData.hasOwnProperty(i)) search.push(`${i}=${encodeURIComponent(this.searchData[i])}`)
           }
         }
         this.download(search.join('&'))
@@ -270,6 +274,9 @@ export default {
         }
         this.download(`repairRecordIdStr=${this.selections.map(item => item.repairRecordId).join(',')}`)
       }
+    },
+    deviceStatus(s) {
+      return Number(s) === 0 ? '<span style="color: red;">未开机</span>' : '已开机'
     }
   },
   watch: {
@@ -289,6 +296,19 @@ export default {
         this.searchData.startTime = ''
         this.searchData.endTime = ''
       }
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
+    },
+    'searchData.deviceType'() {
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
+    },
+    'searchData.projectId'() {
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
     }
   },
   created() {

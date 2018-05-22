@@ -16,19 +16,19 @@
           ></el-cascader>
         </el-form-item>-->
         <el-form-item>
-          <el-select v-model="registerStatus" placeholder="请选择登记状态">
+          <el-select v-model="registerStatus" placeholder="请选择登记状态" clearable>
             <el-option label="存续" value="1"></el-option>
             <el-option label="注销" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="enterpriseType" placeholder="请选择企业类型">
+          <el-select v-model="enterpriseType" placeholder="请选择企业类型" clearable>
             <el-option label="公司" value="1"></el-option>
             <el-option label="自然人" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="corpNature" placeholder="请选择企业性质">
+          <el-select v-model="corpNature" placeholder="请选择企业性质" clearable>
             <el-option label="企业" value="1"></el-option>
             <el-option label="事业" value="2"></el-option>
             <el-option label="机关" value="3"></el-option>
@@ -151,7 +151,7 @@
         导出企业<i class="el-icon-arrow-down el-icon--right"></i>
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="first">按当前条件导出</el-dropdown-item>
+        <el-dropdown-item command="first">导出全部</el-dropdown-item>
         <!--<el-dropdown-item command="second">导出当前页</el-dropdown-item>-->
         <el-dropdown-item command="third">导出当前页</el-dropdown-item>
       </el-dropdown-menu>
@@ -434,6 +434,7 @@ export default {
     height: 160px;
     background: url(../../common/img/head_bg.jpg) no-repeat 100% 100%;
     padding: 30px 0 0 0;
+    margin: -20px -20px 0 -20px;
     form {
       text-align: center;
       width: 1000px;

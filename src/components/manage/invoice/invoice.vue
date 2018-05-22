@@ -38,7 +38,8 @@
         align="center"
         label="发票状态">
         <template slot-scope="scope">
-          <span>{{ scope.row.invoicePrintState == 0 ? "待打印" : scope.row.invoicePrintState == 1 ? "等待发出" : scope.row.invoicePrintState == 2 ? "已发出" :  scope.row.invoicePrintState ? "未申请" : scope.row.invoicePrintState ? "已接收" : '--' }}</span>
+          <!--发票状态（0-待打印,1-已打印,2-已发出,3-已接收）-->
+          <span>{{ Number(scope.row.invoicePrintState) === 0 ? "待打印" : Number(scope.row.invoicePrintState) === 1 ? "等待发出" : Number(scope.row.invoicePrintState) === 2 ? "已发出" :  Number(scope.row.invoicePrintState) === 3 ? "已接收" : '--' }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -48,7 +49,7 @@
         width="150">
         <template slot-scope="scope">
           <el-button v-if="scope.row.invoicePrintState" @click="handleClick(scope.row.invoiceId)" type="text" size="small">查看</el-button>
-          <el-button v-if="scope.row.invoicePrintState" @click="addNew(scope.row.invoiceId,scope.row.orderId)"  type="text" size="small">重新申请</el-button>
+          <el-button v-if="scope.row.invoicePrintState" @click="addNew(scope.row.invoiceId,scope.row.orderId, true)"  type="text" size="small">重新申请</el-button>
           <el-button v-if="!scope.row.invoicePrintState" @click="addNew(scope.row.invoiceId,scope.row.orderId)"  type="text" size="small">申请</el-button>
         </template>
       </el-table-column>
@@ -58,7 +59,7 @@
       @current-change="handleCurrentChange"
       :bean="pageBean"
       class="pagination"></pagination>
-    <el-dialog title="发票信息" :visible.sync="dialogTableVisible" :loading="loading">
+    <el-dialog title="发票信息" :visible.sync="dialogTableVisible">
       <el-dialog
         width="450px"
         title="物流信息"
@@ -93,7 +94,7 @@
             <td class="table_right">{{detailed.invoiceContent || nulltip}}</td>
           </tr>
           <tr>
-            <td class="table_left">发票金额</td>
+            <td class="table_left">发票金额(元)</td>
             <td class="table_right">{{detailed.invoiceValue || nulltip}}</td>
           </tr>
           <tr>
@@ -138,10 +139,10 @@
         </table>
       </div>
     </el-dialog>
-    <el-dialog title="发票信息" :visible.sync="dialogFormVisible" :loading="loading" fullscreen width="600px">
+    <el-dialog title="发票信息" :visible.sync="dialogFormVisible" fullscreen width="600px">
       <el-form :model="form" :rules="rules" ref="form" class="form">
         <el-form-item label="请选择发票类型" :label-width="formLabelWidth" prop="invoiceType">
-          <el-radio-group v-model="form.invoiceType"  >
+          <el-radio-group v-model="form.invoiceType">
             <el-radio border disabled  :label="0" >电子发票</el-radio>
             <el-radio border  :label="1" >纸质发票</el-radio>
           </el-radio-group>
@@ -263,14 +264,14 @@ export default {
         invoiceDutyParagraph: [
           { required: true, message: '请输入税号', trigger: 'change' },
           { validator(rule, value, callback) {
-            if (/^[0-9]*$/.test(value)) {
+            if (/^[0-9a-zA-Z]*$/.test(value)) {
               if (value.length > 30) {
                 callback(new Error('税号长度不能超过30位'))
               } else {
                 callback()
               }
             } else {
-              callback(new Error('请输入数字值'))
+              callback(new Error('请输入数字或字母'))
             }
           },
           trigger: 'change' }
@@ -301,24 +302,20 @@ export default {
         invoiceTelephone: [
           { required: true, message: '请输入电话号码', trigger: 'change' },
           { validator(rule, value, callback) {
-            if (/^[0-9]*$/.test(value)) {
-              if (value.length > 11) {
-                callback(new Error('请输入正确的电话格式'))
-              } else {
-                callback()
-              }
+            if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value) || /^((0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/.test(value)) {
+              callback()
             } else {
-              callback(new Error('请输入正确的电话格式'))
+              callback(new Error('请输入正确的电话号码'))
             }
           },
           trigger: 'change' }
         ],
         invoiceOpenBank: [
           { required: true, message: '请输入开户银行', trigger: 'change' },
-          { min: 1, max: 10, message: '开户银行长度在 1 到 10 个字符', trigger: 'change' }
+          { min: 1, max: 30, message: '开户银行长度在 1 到 30 个字符', trigger: 'change' }
         ],
         invoiceAccounts: [
-          { required: true, message: '请输入银行卡账户', trigger: 'change' },
+          { required: true, message: '请输入银行卡账户', trigger: 'blur' },
           { validator(rule, value, callback) {
             if (/^([1-9]{1})(\d{14}|\d{18})$/.test(value)) {
               callback()
@@ -326,7 +323,7 @@ export default {
               callback(new Error('请输入正确的银行卡账户格式'))
             }
           },
-          trigger: 'change' }
+          trigger: 'blur' }
         ],
         invoiceAddressee: [
           { required: true, message: '请输入收件人姓名', trigger: 'change' },
@@ -335,25 +332,21 @@ export default {
         invoiceAddresseePhone: [
           { required: true, message: '请输入电话号码', trigger: 'change' },
           { validator(rule, value, callback) {
-            if (/^[0-9]*$/.test(value)) {
-              if (value.length > 11) {
-                callback(new Error('请输入正确的电话格式'))
-              } else {
-                callback()
-              }
+            if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value) || /^((0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$/.test(value)) {
+              callback()
             } else {
-              callback(new Error('请输入正确的电话格式'))
+              callback(new Error('请输入正确的电话号码'))
             }
           },
           trigger: 'change' }
         ],
         invoiceAddresseeArea: [
           { required: true, message: '请输入所在地区', trigger: 'change' },
-          { min: 1, max: 30, message: '所在地区内容长度在 1 到 30 个字符', trigger: 'change' }
+          { min: 1, max: 60, message: '所在地区内容长度在 1 到 60 个字符', trigger: 'change' }
         ],
         invoiceAddresseeAddress: [
           { required: true, message: '请输入详细地址', trigger: 'change' },
-          { min: 1, max: 30, message: '详细地址内容长度在 1 到 30 个字符', trigger: 'change' }
+          { min: 1, max: 60, message: '详细地址内容长度在 1 到 60 个字符', trigger: 'change' }
         ],
         invoiceAddresseeEmail: [
           { required: true, message: '请输入邮箱地址', trigger: 'change' },
@@ -376,20 +369,14 @@ export default {
     }
   },
   methods: {
-    showList () {
-    },
+    showList () {},
     handleClick(invoiceId) {
       this.dialogTableVisible = true
-      if (this.loading) return
-      this.loading = true
       post('service/business/college/iccInvoice/iccInvoice/getIccInvoice.xf', { invoiceId: invoiceId }).then(data => {
-        this.loading = false
         data.result || (data.result = [])
         this.detailed = data.result
-        this.invoiceList = data.result.logistics instanceof Array ? data.result.logistics.Traces : []
-      }).catch(() => {
-        this.loading = false
-      })
+        this.invoiceList = data.result && data.result.logistics && data.result.logistics.Traces instanceof Array ? data.result.logistics.Traces : []
+      }).catch(() => {})
     },
     handleSizeChange(size) {
       this.userdata.rowsNum = size
@@ -410,6 +397,7 @@ export default {
               this.$alert(res.error.message, '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
+                  this.getmessage()
                   this.resetForm(formName)
                 }
               })
@@ -438,24 +426,52 @@ export default {
         this.loading = false
       })
     },
-    addNew(Fid, Did) {
-      if (this.loading) return
-      this.loading = true
+    addNew(Fid, Did, repeat) {
+      let form = {
+        orderId: '',
+        invoiceId: '',
+        invoiceType: 1,
+        invoiceClass: '', // 发票种类
+        invoiceHeadType: '', // 发票抬头
+        invoiceHead: '',
+        invoiceDutyParagraph: '',
+        invoiceContent: '',
+        invoiceValue: '',
+        invoiceAddress: '',
+        invoiceTelephone: '',
+        invoiceOpenBank: '',
+        invoiceAccounts: '',
+        invoiceAddressee: '',
+        invoiceAddresseePhone: '',
+        invoiceAddresseeArea: '',
+        invoiceAddresseeAddress: '',
+        invoiceAddresseeEmail: ''
+      }
+      if (repeat) { // 重新申请
+        post('service/business/college/iccInvoice/iccInvoice/applyIccInvoice.xf', {
+          orderId: Did,
+          userId: this.uid
+        }).then(data => {
+          data.result || (data.result = {})
+          data.result.invoiceType = Number(data.result.invoiceType)
+          data.result.invoiceClass = Number(data.result.invoiceClass)
+          data.result.invoiceHeadType = Number(data.result.invoiceHeadType)
+          for (let i in form) {
+            if (form.hasOwnProperty(i) && data.result[i] !== null && typeof data.result[i] !== 'undefined') {
+              form[i] = data.result[i]
+            }
+          }
+          this.form = form
+        }).catch(() => {})
+      } else {
+        this.form = form
+      }
       this.form.invoiceId = Fid
       this.form.orderId = Did
-      post('service/business/college/iccInvoice/iccInvoice/applyIccInvoice.xf', {
-        orderId: Did,
-        userId: this.uid
-      }).then(data => {
-        this.loading = false
-        data.result || (data.result = [])
-        if (data.result) {
-          // this.form = data.result
-        }
-      }).catch(() => {
-        this.loading = false
-      })
       this.dialogFormVisible = true
+      setTimeout(() => {
+        this.$refs.form.clearValidate()
+      }, 20)
     }
   },
   mounted() {

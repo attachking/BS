@@ -24,12 +24,12 @@
           <el-button type="primary" size="small" icon="el-icon-plus" @click="add" :disabled="!adminReadable">创建问题</el-button>
         </el-form-item>
         <el-form-item label="问题类别">
-          <el-select v-model="searchData.knowledgeType" filterable placeholder="请选择问题类别">
+          <el-select v-model="searchData.knowledgeType" filterable placeholder="请选择问题类别" clearable>
             <el-option :label="item.parameterOption" :value="item.parameterId" v-for="item in dictionaries.issuesType" :key="item.parameterId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="创建人">
-          <el-select v-model="searchData.userId" filterable placeholder="请选择创建人">
+          <el-select v-model="searchData.userId" filterable placeholder="请选择创建人" clearable>
             <el-option :label="item.userName" :value="item.userId" v-for="item in userList" :key="item.userId"></el-option>
           </el-select>
         </el-form-item>
@@ -314,7 +314,9 @@ export default {
       this.searchData.knowledgeType = ''
       this.searchData.knowledgeDesc = ''
       this.keywords = ''
-      this.onSubmit()
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
     },
     getDetail() {
       let index = this.editableTabs.findIndex(item => item.name === 'detail')
@@ -337,7 +339,7 @@ export default {
         this.fullLoading.close()
         let obj = res.result.iccKnowledgeInfo || {}
         this.files = res.result.iccDeviceFileList.map(item => {
-          if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(item.deviceFileName)) {
+          if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(item.deviceFileUrl)) {
             return {
               type: 1,
               name: item.deviceFileName,
@@ -369,18 +371,14 @@ export default {
   },
   watch: {
     'searchData.userId'(newVal, oldVal) {
-      if (newVal !== '') {
-        setTimeout(() => {
-          this.getList()
-        }, 300)
-      }
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
     },
     'searchData.knowledgeType'(newVal, oldVal) {
-      if (newVal !== '') {
-        setTimeout(() => {
-          this.getList()
-        }, 300)
-      }
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
     }
   },
   created() {

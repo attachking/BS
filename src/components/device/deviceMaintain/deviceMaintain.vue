@@ -9,12 +9,12 @@
     </el-tabs>
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item label="选择项目">
-        <el-select v-model="searchData.projectId" placeholder="请选择项目" filterable>
+        <el-select v-model="searchData.projectId" placeholder="请选择项目" filterable clearable>
           <el-option :label="item.projectName" :value="item.projectId" v-for="(item, key) in projectList" :key="key"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="设备类型">
-        <el-select v-model="searchData.deviceType" placeholder="设备类型">
+        <el-select v-model="searchData.deviceType" placeholder="设备类型" clearable>
           <el-option :label="item.parameterOption" :value="item.parameterId" v-for="(item, key) in dictionaries.deviceType" :key="key"></el-option>
         </el-select>
       </el-form-item>
@@ -25,7 +25,7 @@
         </el-select>
       </el-form-item>-->
       <el-form-item label="实施人员">
-        <el-select filterable v-model="searchData.userIduserId" placeholder="请选择实施人员">
+        <el-select filterable v-model="searchData.userIduserId" placeholder="请选择实施人员" clearable>
           <el-option :label="val.userName" :value="val.userId" v-for="(val, key) in impList" :key="key"></el-option>
         </el-select>
       </el-form-item>
@@ -115,8 +115,8 @@
             <el-form-item label="设备是否授权:">
               <span>{{ !!props.row.deviceLicenseKey ? '是' : '否' }}</span>
             </el-form-item>
-            <el-form-item label="设备创建时间:">
-              <span>{{ props.row.deviceCreatetime || '--' }}</span>
+            <el-form-item label="所属项目:">
+              <span>{{ props.row.projectName || '--' }}</span>
             </el-form-item>
             <el-form-item label="设备安装人员:">
               <span>{{ props.row.deviceInstallerName || '--' }}</span>
@@ -162,11 +162,10 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="设备创建时间"
-        align="center"
-        prop="deviceCreatetime">
+        label="所属项目"
+        align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.deviceCreatetime || '--'}}</span>
+          <span>{{scope.row.projectName || '--'}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -223,12 +222,12 @@
     <el-dialog title="添加设备" :visible.sync="dialogFormVisible" width="520px">
       <el-form :model="deviceForm" style="width: 420px;" label-width="120px" ref="deviceForm" :rules="rules" class="add">
         <el-form-item label="所属项目" prop="projectId">
-          <el-select v-model="deviceForm.projectId" placeholder="请选择项目" filterable>
+          <el-select v-model="deviceForm.projectId" placeholder="请选择项目" filterable clearable>
             <el-option :label="item.projectName" :value="item.projectId" v-for="(item, key) in projectList" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="设备类型" prop="deviceTypeId">
-          <el-select v-model="deviceForm.deviceTypeId" placeholder="设备类型">
+          <el-select v-model="deviceForm.deviceTypeId" placeholder="设备类型" clearable>
             <el-option :label="item.parameterOption" :value="item.parameterId" v-for="(item, key) in dictionaries.deviceType" :key="key"></el-option>
           </el-select>
         </el-form-item>
@@ -383,7 +382,7 @@ export default {
       this.searchData.currentPage = 1
       setTimeout(() => {
         this.getList()
-      }, 200)
+      }, 20)
     },
     getList() {
       if (this.loading) return
@@ -597,7 +596,22 @@ export default {
       this.searchData.currentPage = 1
       setTimeout(() => {
         this.getList()
-      }, 300)
+      }, 20)
+    },
+    'searchData.projectId'(newVal, oldVal) {
+      setTimeout(() => {
+        this.getList()
+      }, 20)
+    },
+    'searchData.deviceType'() {
+      setTimeout(() => {
+        this.getList()
+      }, 20)
+    },
+    'searchData.userIduserId'() {
+      setTimeout(() => {
+        this.getList()
+      }, 20)
     }
   },
   created() {

@@ -8,7 +8,7 @@
         <el-input type="text" v-model="form.knowledgeKeyword" placeholder="请输入关键字"></el-input>
       </el-form-item>
       <el-form-item label="问题类别" prop="knowledgeType">
-        <el-select v-model="form.knowledgeType" placeholder="请选择问题类别">
+        <el-select v-model="form.knowledgeType" placeholder="请选择问题类别" clearable>
           <el-option :label="item.parameterOption" :value="item.parameterId" v-for="(item, key) in dictionaries.issuesType" :key="key"></el-option>
         </el-select>
       </el-form-item>

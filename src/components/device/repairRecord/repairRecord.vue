@@ -20,7 +20,7 @@
     <div v-show="editableTabsValue === 'list'">
       <el-form :inline="true" class="demo-form-inline" ref="search">
         <el-form-item label="设备类型">
-          <el-select v-model="searchData.deviceType" placeholder="设备类型">
+          <el-select v-model="searchData.deviceType" placeholder="设备类型" clearable>
             <el-option :label="item.parameterOption" :value="item.parameterId" v-for="(item, key) in dictionaries.deviceType" :key="key"></el-option>
           </el-select>
         </el-form-item>
@@ -31,12 +31,12 @@
           </el-select>
         </el-form-item>-->
         <el-form-item label="实施人员">
-          <el-select filterable v-model="searchData.userId" placeholder="请选择实施人员">
+          <el-select filterable v-model="searchData.userId" placeholder="请选择实施人员" clearable>
             <el-option :label="val.userName" :value="val.userId" v-for="(val, key) in impList" :key="key"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属项目">
-          <el-select v-model="searchData.projectName" placeholder="请选择项目" filterable>
+          <el-select v-model="searchData.projectName" placeholder="请选择项目" filterable clearable>
             <el-option :label="item.projectName" :value="item.projectName" v-for="(item, key) in projectList" :key="key"></el-option>
           </el-select>
         </el-form-item>
@@ -208,7 +208,7 @@
           导出记录<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="first">按当前条件导出</el-dropdown-item>
+          <el-dropdown-item command="first">导出全部</el-dropdown-item>
           <!--<el-dropdown-item command="second">导出当前页</el-dropdown-item>-->
           <el-dropdown-item command="third">导出当前页</el-dropdown-item>
         </el-dropdown-menu>
@@ -294,6 +294,7 @@ export default {
   },
   methods: {
     getList() {
+      if (this.loading) return
       this.loading = true
       let o = Object.assign({}, this.searchData)
       o.deviceName = encodeURIComponent(o.deviceName)
@@ -337,7 +338,9 @@ export default {
       this.searchData.endTime = ''
       this.searchData.userId = ''
       this.dateRange = []
-      this.getList()
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
     },
     handleDbclick(row) {
       this.$refs.table.toggleRowExpansion(row)
@@ -398,7 +401,7 @@ export default {
         let search = []
         for (let i in this.searchData) {
           if (i !== 'currentPage' && i !== 'rowsNum') {
-            search.push(`${i}=${this.searchData[i]}`)
+            if (this.searchData.hasOwnProperty(i)) search.push(`${i}=${this.searchData[i]}`)
           }
         }
         this.download(search.join('&'))
@@ -422,6 +425,24 @@ export default {
         this.searchData.startTime = ''
         this.searchData.endTime = ''
       }
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
+    },
+    'searchData.deviceType'() {
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
+    },
+    'searchData.projectName'() {
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
+    },
+    'searchData.userId'() {
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
     }
   },
   created() {

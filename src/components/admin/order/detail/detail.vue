@@ -9,15 +9,15 @@
         <td colspan="1" class="label">购买套餐</td>
         <td colspan="2">{{data.iccOrder.packageName || '--'}}</td>
         <td colspan="1" class="label">购买账户</td>
-        <td colspan="2">{{data.iccOrder.userAccount || '--'}}</td>
+        <td colspan="2">{{data.iccOrder.customerAccount || '--'}}</td>
       </tr>
       <tr>
         <td class="label" colspan="1">平台名称</td>
-        <td colspan="2">{{data.iccOrder.userName || '--'}}</td>
+        <td colspan="2">{{data.iccOrder.projectName || '--'}}</td>
         <td colspan="1" class="label">机构</td>
-        <td colspan="2">{{data.iccOrder.agencyName || '--'}}</td>
-        <td colspan="1" class="label">机构类型</td>
-        <td colspan="2">{{data.iccOrder.agencyTypeStr || '--'}}</td>
+        <td colspan="2">{{data.iccOrder.customerOrg || '--'}}</td>
+        <td colspan="1" class="label">项目类型</td>
+        <td colspan="2">{{data.iccOrder.projectTypeStr || '--'}}</td>
       </tr>
       <tr>
         <td class="label" colspan="1">订单金额（元）</td>
@@ -36,12 +36,10 @@
         <td colspan="2">{{Number(data.iccOrder.orderPaymentStatus) === 2 ? '是' : '否'}}</td>
       </tr>
       <tr>
-        <td colspan="1" class="label" v-if="data.iccOrder.orderStatus === 3">退款时间</td>
-        <td colspan="2" v-if="data.iccOrder.orderStatus === 3">{{data.iccOrder.orderRefundTime || '--'}}</td>
-        <td class="label" colspan="1" v-if="data.iccOrder.orderStatus === 3">退款金额</td>
-        <td colspan="2" v-if="data.iccOrder.orderStatus === 3">{{data.iccOrder.orderRefundAmount || '--'}}</td>
-        <td colspan="1" class="label" v-if="data.iccOrder.orderStatus === 3">退款备注</td>
-        <td colspan="2" v-if="data.iccOrder.orderStatus === 3">{{data.iccOrder.orderRefundDescribe || '--'}}</td>
+        <td colspan="1" class="label" v-if="Number(data.iccOrder.orderPaymentStatus) === 2">退款时间</td>
+        <td colspan="2" v-if="Number(data.iccOrder.orderPaymentStatus) === 2">{{data.iccOrder.orderRefundTime || '--'}}</td>
+        <td class="label" colspan="1" v-if="Number(data.iccOrder.orderPaymentStatus) === 2">退款金额</td>
+        <td colspan="2" v-if="Number(data.iccOrder.orderPaymentStatus) === 2">{{data.iccOrder.orderRefundAmount || '--'}}</td>
       </tr>
     </table>
     <p class="title">发票信息-{{data.iccOrder.invoicePrintStateStr || '无'}}</p>
@@ -67,7 +65,7 @@
         <td colspan="2">{{data.iccInvoice.invoiceDutyParagraph || '--'}}</td>
         <td colspan="1" class="label">发票内容</td>
         <td colspan="2">{{data.iccInvoice.invoiceContent || '--'}}</td>
-        <td colspan="1" class="label">发票金额</td>
+        <td colspan="1" class="label">发票金额（元）</td>
         <td colspan="2">{{data.iccInvoice.invoiceValue || '--'}}</td>
       </tr>
       <tr>

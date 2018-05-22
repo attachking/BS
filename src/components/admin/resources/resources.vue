@@ -21,6 +21,7 @@
               type="text"
               size="mini"
               :disabled="!adminReadable"
+              v-if="data.resourceId === 0 || data.parentResourc === 0"
               @click="append(data)">
               新增
             </el-button>
@@ -199,6 +200,9 @@ export default {
       this.form.parentResourc = ''
       this.dialogTitle = '修改'
       this.dialogFormVisible = true
+      setTimeout(() => {
+        this.$refs.form.clearValidate()
+      }, 20)
     },
     getList() {
       this.fullLoading = this.$loading({

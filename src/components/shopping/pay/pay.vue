@@ -87,6 +87,7 @@ export default {
             this.$alert('支付成功', {
               confirmButtonText: '确定',
               callback: action => {
+                this.$emit('update')
                 this.$router.push({ name: 'order' })
               }
             })

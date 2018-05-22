@@ -5,7 +5,7 @@
   "author": "hnxf",
   "private": true,
   "scripts": {
-    "244": "set host=192.168.1.244&& set port=80&& npm run dev",
+    "244": "set host=192.168.1.244&& set port=81&& npm run dev",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js"
@@ -14,7 +14,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-runtime": "^6.26.0",
     "echarts": "^4.0.4",
-    "element-ui": "^2.3.3",
+    "element-ui": "^2.3.8",
     "jquery": "^3.3.1",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1",

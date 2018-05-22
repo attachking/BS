@@ -20,12 +20,12 @@
       <div class="list" v-if="editableTabsValue === 'list'">
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="套餐类型">
-            <el-select v-model="packageId" placeholder="请选择购买套餐类型">
+            <el-select v-model="packageId" placeholder="请选择购买套餐类型" clearable>
               <el-option :label="val.packageName" :value="val.packageId" v-for="(val, key) in packageList" :key="key"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="所属类型">
-            <el-select v-model="agencyType" placeholder="请选择所属类型">
+            <el-select v-model="agencyType" placeholder="请选择所属类型" clearable>
               <el-option :label="item.name" :value="item.code" v-for="item in projectType" :key="item.code"></el-option>
             </el-select>
           </el-form-item>
@@ -40,7 +40,7 @@
             </el-select>
           </el-form-item>-->
           <el-form-item label="订单状态">
-            <el-select v-model="orderStatus" placeholder="请选择订单状态">
+            <el-select v-model="orderStatus" placeholder="请选择订单状态" clearable>
               <el-option label="待付款" :value="0"></el-option>
               <el-option label="使用中" :value="1"></el-option>
               <el-option label="已取消" :value="2"></el-option>
@@ -48,14 +48,14 @@
             </el-select>
           </el-form-item>
           <el-form-item label="支付状态">
-            <el-select v-model="orderPaymentStatus" placeholder="请选择支付状态">
+            <el-select v-model="orderPaymentStatus" placeholder="请选择支付状态" clearable>
               <el-option label="未付款" :value="0"></el-option>
               <el-option label="已付款" :value="1"></el-option>
               <el-option label="已退款" :value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="发票打印状态">
-            <el-select v-model="invoicePrintTempState" placeholder="请选择发票打印状态">
+            <el-select v-model="invoicePrintTempState" placeholder="请选择发票打印状态" clearable>
               <el-option label="待打印" :value="0"></el-option>
               <el-option label="等待发出" :value="1"></el-option>
               <el-option label="已发出" :value="2"></el-option>
@@ -63,7 +63,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="发票类型">
-            <el-select v-model="invoiceType" placeholder="请选择发票类型">
+            <el-select v-model="invoiceType" placeholder="请选择发票类型" clearable>
               <el-option label="电子" :value="0"></el-option>
               <el-option label="纸质" :value="1"></el-option>
             </el-select>
@@ -125,14 +125,14 @@
                   <el-form-item label="订单提交时间:">
                     <span>{{ props.row.orderTime || '--' }}</span>
                   </el-form-item>
-                  <el-form-item label="订单金额:">
+                  <el-form-item label="订单金额（元）:">
                     <span>{{ props.row.orderAmount || '--' }}</span>
                   </el-form-item>
                   <el-form-item label="已使用条数:">
-                    <span>{{ props.row.cntAuthen || '--' }}</span>
+                    <span>{{ props.row.cntAuthen || 0 }}</span>
                   </el-form-item>
                   <el-form-item label="剩余条数:">
-                    <span>{{ props.row.packageCounts || '--' }}</span>
+                    <span>{{ (props.row.packageCounts - props.row.cntAuthen) || 0 }}</span>
                   </el-form-item>
                   <el-form-item label="订单状态:">
                     <span>{{ props.row.orderStatusStr || '--' }}</span>
@@ -140,7 +140,10 @@
                   <el-form-item label="支付状态:">
                     <span>{{ props.row.orderPaymentStatusStr || '--' }}</span>
                   </el-form-item>
-                  <el-form-item label="付款类型:">
+                  <el-form-item label="退款金额:" v-if="Number(props.row.orderPaymentStatus) === 2">
+                    <span>{{ props.row.orderRefundAmount || '--' }}</span>
+                  </el-form-item>
+                  <el-form-item label="支付方式:">
                     <span>{{ props.row.orderPaymentSourcesStr || '--' }}</span>
                   </el-form-item>
                   <el-form-item label="发票打印状态:">
@@ -188,7 +191,7 @@
             </el-table-column>
             <el-table-column
               align="center"
-              label="订单金额"
+              label="订单金额（元）"
               prop="orderAmount">
             </el-table-column>
             <el-table-column
@@ -206,18 +209,25 @@
                 <el-button
                   @click.native.prevent="pay(scope.row)"
                   type="text"
-                  v-if="Number(scope.row.orderPaymentStatus) === 0"
+                  v-if="Number(scope.row.orderPaymentStatus) === 0 && Number(scope.row.orderStatus) !== 2"
                   size="small">
                   付款
                 </el-button>
-                <el-button
+                <el-dropdown @command="handleRefund($event, scope.row)" v-if="Number(scope.row.orderStatus) !== 0 && Number(scope.row.orderPaymentStatus) === 1">
+                  <span class="el-dropdown-link">退款</span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item :command="1" v-if="Number(scope.row.orderPaymentSources) !== 2">原路退款</el-dropdown-item>
+                    <el-dropdown-item :command="2">公对公退款</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+                <!--<el-button
                   @click.native.prevent="refund(scope.row)"
                   type="text"
                   :disabled="!adminReadable"
                   v-if="Number(scope.row.orderStatus) !== 0 && Number(scope.row.orderPaymentStatus) === 1"
                   size="small">
                   退款
-                </el-button>
+                </el-button>-->
                 <br v-if="Number(scope.row.orderStatus) !== 0">
                 <el-button
                   @click.native.prevent="downInvoice(scope.row)"
@@ -249,7 +259,7 @@
               导出订单<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="first">按当前条件导出</el-dropdown-item>
+              <el-dropdown-item command="first">导出全部</el-dropdown-item>
               <!--<el-dropdown-item command="second">导出当前页</el-dropdown-item>-->
               <el-dropdown-item command="third">导出当前页</el-dropdown-item>
             </el-dropdown-menu>
@@ -259,7 +269,7 @@
               导出发票<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="first">按当前条件导出</el-dropdown-item>
+              <el-dropdown-item command="first">导出全部</el-dropdown-item>
               <!--<el-dropdown-item command="second">导出当前页</el-dropdown-item>-->
               <el-dropdown-item command="third">导出当前页</el-dropdown-item>
             </el-dropdown-menu>
@@ -271,7 +281,7 @@
     <el-dialog title="编辑物流" :visible.sync="dialogFormVisible" width="600px">
       <el-form :model="form" class="add" label-width="120px" ref="form" :rules="rules">
         <el-form-item label="物流公司" prop="logisticsSid">
-          <el-select v-model="form.logisticsSid" filterable placeholder="请选择物流公司">
+          <el-select v-model="form.logisticsSid" filterable placeholder="请选择物流公司" clearable>
             <el-option
               v-for="item in dictionaries.express"
               :key="item.parameterCode"
@@ -444,7 +454,8 @@ export default {
       dialogFormVisible2: false,
       form2: {
         userId: '',
-        orderNo: ''
+        orderNo: '',
+        orderId: ''
       },
       rules2: {},
       loading3: false,
@@ -538,8 +549,9 @@ export default {
         if (res.pageBean.currentPage === 1 && res.result.length) {
           let total = Number(res.result[0].total)
           let back = Number(res.result[0].refund)
-          this.assetsData.total = total + back
-          this.assetsData.received = total
+          let totalDiff = Number(res.result[0].totalDiff)
+          this.assetsData.total = total + back + totalDiff
+          this.assetsData.received = total + totalDiff
           this.assetsData.back = back
         } else if (!res.result.length) {
           this.assetsData.total = 0
@@ -655,6 +667,7 @@ export default {
                 message: res.error.message
               })
               this.dialogFormVisible = false
+              this.getList()
             }
           }).catch(() => {
             this.loading2 = false
@@ -662,11 +675,13 @@ export default {
         }
       })
     },
-    backSubmit() {
+    backSubmit(row) {
       this.fullLoading = this.$loading({
         lock: true
       })
-      post('service/business/college/alipay/alipay/toAccountTransfer.xf', this.form2).then(res => {
+      //
+      let url = Number(row.orderPaymentSourcesorderPaymentSources) === 2 ? 'service/business/college/iccOrder/iccOrder/ptpRefundPayOrder.xf' : 'service/business/college/alipay/alipay/toAccountTransfer.xf'
+      post(url, this.form2).then(res => {
         this.fullLoading.close()
         if (res.error.result === 1) {
           this.$message({
@@ -679,16 +694,49 @@ export default {
         this.fullLoading.close()
       })
     },
+    ptpRefund() {
+      this.$prompt('请输入退款金额', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^[1-9]\d{0,4}$/,
+        inputErrorMessage: '只能输入大于0的数字，最多5位数'
+      }).then(({value}) => {
+        let obj = Object.assign({}, this.form2, {orderRefundAmount: value})
+        this.fullLoading = this.$loading({
+          lock: true
+        })
+        return post('service/business/college/iccOrder/iccOrder/ptpRefundPayOrder.xf', obj)
+      }).then(res => {
+        this.fullLoading.close()
+        if (res.error.result === 1) {
+          this.$message({
+            type: 'success',
+            message: res.error.message
+          })
+          this.getList()
+        }
+      }).catch(() => {
+        this.fullLoading.close()
+      })
+    },
+    handleRefund(index, row) {
+      this.form2.orderNo = row.orderNo
+      this.form2.orderId = row.orderId
+      this.form2.userId = this.uid
+      if (index === 1) {
+        this.refund(row)
+      } else {
+        this.ptpRefund()
+      }
+    },
     refund(row) {
       // this.dialogFormVisible2 = true
-      this.form2.orderNo = row.orderNo
-      this.form2.userId = this.uid
       this.$confirm('确定要对该订单进行退款吗?退款费用在一天之内返回原付款账户', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.backSubmit()
+        this.backSubmit(row)
       }).catch(() => {
         // 1
       })
@@ -730,7 +778,9 @@ export default {
       this.searchData.projectType = newVal
       this.searchData.agencyId = ''
       this.searchData.currentPage = 1
-      this.getList()
+      setTimeout(() => {
+        this.getList()
+      }, 20)
     },
     agencyId(newVal, oldVal) {
       this.searchData.agencyId = newVal
@@ -759,10 +809,10 @@ export default {
     },
     packageId(newVal, oldVal) {
       this.searchData.packageId = newVal
-      if (newVal !== '') {
-        this.searchData.currentPage = 1
+      this.searchData.currentPage = 1
+      setTimeout(() => {
         this.getList()
-      }
+      }, 20)
     },
     userId(newVal, oldVal) {
       this.searchData.userId = newVal
@@ -773,31 +823,31 @@ export default {
     },
     orderStatus(newVal, oldVal) {
       this.searchData.orderStatus = newVal
-      if (newVal !== '') {
-        this.searchData.currentPage = 1
+      this.searchData.currentPage = 1
+      setTimeout(() => {
         this.getList()
-      }
+      }, 20)
     },
     orderPaymentStatus(newVal, oldVal) {
       this.searchData.orderPaymentStatus = newVal
-      if (newVal !== '') {
-        this.searchData.currentPage = 1
+      this.searchData.currentPage = 1
+      setTimeout(() => {
         this.getList()
-      }
+      }, 20)
     },
     invoicePrintTempState(newVal, oldVal) {
       this.searchData.invoicePrintTempState = newVal
-      if (newVal !== '') {
-        this.searchData.currentPage = 1
+      this.searchData.currentPage = 1
+      setTimeout(() => {
         this.getList()
-      }
+      }, 20)
     },
     invoiceType(newVal, oldVal) {
       this.searchData.invoiceType = newVal
-      if (newVal !== '') {
-        this.searchData.currentPage = 1
+      this.searchData.currentPage = 1
+      setTimeout(() => {
         this.getList()
-      }
+      }, 20)
     }
   },
   created() {
@@ -841,5 +891,14 @@ export default {
   .pagination{
     padding: 10px 0;
     text-align: center;
+  }
+  .el-dropdown-link{
+    color: #409EFF;
+    font-size: 12px;
+    display: inline-block;
+    padding-left: 5px;
+    &:hover{
+      cursor: pointer;
+    }
   }
 </style>

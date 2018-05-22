@@ -134,6 +134,14 @@ export default {
           max: 20,
           message: '最多20个字符',
           trigger: 'change'
+        }, {
+          validator(rule, value, callback) {
+            if (/^[a-zA-Z0-9]*$/.test(value)) {
+              callback()
+            } else {
+              callback(new Error('只能输入数字或字母'))
+            }
+          }
         }]
       },
       form: {

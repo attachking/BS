@@ -5,7 +5,7 @@
         <el-button type="primary" icon="el-icon-plus" @click="add" :disabled="!adminReadable">创建平台</el-button>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="category" placeholder="请选择所属类型">
+        <el-select v-model="category" placeholder="请选择所属类型" clearable>
           <el-option :label="item.name" :value="item.code" v-for="item in projectType" :key="item.code"></el-option>
         </el-select>
       </el-form-item>
@@ -31,7 +31,7 @@
     <el-dialog :title="addTitle" :visible.sync="dialogFormVisible" width="600px" fullscreen>
       <el-form :model="form" class="add" label-width="120px" ref="form" :rules="rules">
         <el-form-item label="平台名称" prop="agencyId">
-          <el-select v-model="form.agencyId" placeholder="请选择机构">
+          <el-select v-model="form.agencyId" placeholder="请选择机构" clearable>
             <el-option :label="item.agencyName" :value="item.agencyId" v-for="(item, key) in agencyList" :key="key"></el-option>
           </el-select>
         </el-form-item>

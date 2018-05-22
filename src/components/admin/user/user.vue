@@ -17,6 +17,7 @@
           placeholder="请选择部门"
           :options="options"
           filterable
+          clearable
           change-on-select
         ></el-cascader>
       </el-form-item>
@@ -127,7 +128,7 @@
           <el-button
             type="text"
             @click="confirmRemove(scope.row.userId)"
-            :disabled="!adminReadable"
+            :disabled="!adminReadable || Number(scope.row.userType) === 2"
             size="small">
             删除
           </el-button>
@@ -252,7 +253,9 @@ export default {
       this.keywords = ''
       this.searchData.agencyId = ''
       this.department = []
-      this.onSubmit()
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
     },
     add() {
       this.edit()
@@ -437,6 +440,9 @@ export default {
   watch: {
     department(newVal, oldVal) {
       this.searchData.agencyId = newVal[newVal.length - 1]
+      setTimeout(() => {
+        this.onSubmit()
+      }, 20)
     },
     department2(newVal, oldVal) {
       this.form.agencyId = newVal[newVal.length - 1]

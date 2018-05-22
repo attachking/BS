@@ -63,10 +63,10 @@ export default {
           trigger: 'change'
         }, {
           validator(rule, value, callback) {
-            if (/^[a-zA-Z0-9]{6,15}$/.test(value)) {
+            if (/^[a-zA-Z0-9_]{6,25}$/.test(value)) {
               callback()
             } else {
-              callback(new Error('密码格式数字或字母，6~15位'))
+              callback(new Error('密码格式数字、字母或下划线，6~25位'))
             }
           },
           trigger: 'change'

@@ -4,14 +4,14 @@
     <div class="option">
       <el-form :inline="true" class="demo-form-inline">
         <el-form-item>
-          <el-select v-model="registerStatus" placeholder="请选择登记状态">
+          <el-select v-model="registerStatus" placeholder="请选择登记状态" clearable>
             <el-option label="请选择登记状态" value=""></el-option>
             <el-option label="存续" value="1"></el-option>
             <el-option label="注销" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="enterpriseType" placeholder="请选择企业类型">
+          <el-select v-model="enterpriseType" placeholder="请选择企业类型" clearable>
             <el-option label="请选择企业类型" value=""></el-option>
             <el-option label="公司" value="1"></el-option>
             <el-option label="自然人" value="2"></el-option>

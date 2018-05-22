@@ -13,12 +13,12 @@
         <el-button size="small" type="primary" icon="el-icon-plus" @click="add" :disabled="!adminReadable">创建项目</el-button>
       </el-form-item>
       <el-form-item label="所属类型">
-        <el-select v-model="category" placeholder="请选择所属类型">
+        <el-select v-model="category" placeholder="请选择所属类型" clearable>
           <el-option :label="item.name" :value="item.code" v-for="item in projectType" :key="item.code"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="实施人员">
-        <el-select filterable v-model="implementId" placeholder="请选择实施人员">
+        <el-select filterable v-model="implementId" placeholder="请选择实施人员" clearable>
           <el-option :label="val.userName" :value="val.userId" v-for="(val, key) in impList" :key="key"></el-option>
         </el-select>
       </el-form-item>
@@ -49,7 +49,7 @@
           <el-input v-model="form.projectName" placeholder="请输入项目名称"></el-input>
         </el-form-item>
         <el-form-item label="项目类别" prop="projectType">
-          <el-select v-model="form.projectType" placeholder="请选择项目类别">
+          <el-select v-model="form.projectType" placeholder="请选择项目类别" clearable>
             <el-option :label="item.name" :value="item.code" v-for="item in projectType" :key="item.code"></el-option>
           </el-select>
         </el-form-item>
@@ -301,7 +301,7 @@
         导出项目<i class="el-icon-arrow-down el-icon--right"></i>
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="first">按当前条件导出</el-dropdown-item>
+        <el-dropdown-item command="first">导出全部</el-dropdown-item>
         <!--<el-dropdown-item command="second">导出当前页</el-dropdown-item>-->
         <el-dropdown-item command="third">导出当前页</el-dropdown-item>
       </el-dropdown-menu>

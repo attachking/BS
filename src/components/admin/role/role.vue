@@ -214,7 +214,6 @@
 <script>
 import {post} from '../../../common/js/http'
 import {mapGetters} from 'vuex'
-import {PAGE_SIZE} from '../../../common/js/config'
 import {adminReadableMixin} from '../../../common/js/mixin'
 import {debounce} from '../../../common/js/clazz'
 
@@ -274,12 +273,12 @@ export default {
       searchIntroduced: {
         roleId: '',
         currentPage: 1,
-        rowsNum: PAGE_SIZE
+        rowsNum: 10
       },
       searchUnintroduced: {
         roleId: '',
         currentPage: 1,
-        rowsNum: PAGE_SIZE
+        rowsNum: 10
       },
       loading4: false,
       loading5: false,
@@ -433,7 +432,7 @@ export default {
       this.getIntroducedList()
       this.getUnintroducedList()
     },
-    getIntroducedList() {
+    getIntroducedList() { // 已引入用户
       this.loading4 = true
       post('service/sys/iccRole/iccRole/roleUserList.xf', this.searchIntroduced).then(res => {
         this.loading4 = false
@@ -443,7 +442,7 @@ export default {
         this.loading4 = false
       })
     },
-    getUnintroducedList() {
+    getUnintroducedList() { // 未引入用户
       this.loading5 = true
       post('service/business/college/iccUser/iccUser/userList.xf', this.searchUnintroduced).then(res => {
         this.loading5 = false
@@ -497,11 +496,11 @@ export default {
       })
     },
     handleCurrentChange2(page) {
-      this.searchIntroduced.currentPage = page
-      this.getIntroducedList()
+      this.searchUnintroduced.currentPage = page
+      this.getUnintroducedList()
     },
     handleCurrentChange3(page) {
-      this.searchUnintroduced.currentPage = page
+      this.searchIntroduced.currentPage = page
       this.getIntroducedList()
     },
     indexMethod(index) {

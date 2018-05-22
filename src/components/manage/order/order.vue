@@ -29,6 +29,7 @@
         label="可认证企业数据">
       </el-table-column>
       <el-table-column
+        align="center"
         label="剩余条数">
         <template slot-scope="scope">
           <span v-if="scope.row.orderPaymentStatus != 0">{{ scope.row.packageCounts - scope.row.cntAuthen }}</span>
@@ -37,6 +38,7 @@
       </el-table-column>
       <el-table-column
         prop="orderAmount"
+        align="center"
         label="缴费金额">
       </el-table-column>
       <el-table-column
@@ -84,7 +86,7 @@
       @current-change="handleCurrentChange"
       :bean="pageBean"
       class="pagination"></pagination>
-    <pay v-model="dialogFormVisible2" :data="userData2"></pay>
+    <pay v-model="dialogFormVisible2" :data="userData2" @update="getList"></pay>
   </div>
 </template>
 
@@ -139,7 +141,6 @@ export default {
       })
     },
     handleClick(ids, id) {
-      console.log(ids, id)
       this.dialogFormVisible2 = true
       this.dialogVisible = true
       this.userData2 = {

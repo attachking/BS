@@ -21,7 +21,7 @@
           <el-form-item>
             <el-switch
               v-model="remember"
-              active-text="记住密码">
+              active-text="自动登录">
             </el-switch>
           </el-form-item>
           <el-form-item class="center">
@@ -71,10 +71,10 @@ export default {
           trigger: 'change'
         }, {
           validator(rule, value, callback) {
-            if (/^[a-zA-Z0-9]*$/.test(value)) {
+            if (/^[a-zA-Z0-9_]*$/.test(value)) {
               callback()
             } else {
-              callback(new Error('只能输入数字和字母'))
+              callback(new Error('只能输入数字、字母或下划线'))
             }
           }
         }]
@@ -125,7 +125,7 @@ export default {
               }
               if (res.result.authenType === 1) {
                 this.$router.replace({
-                  name: 'search'
+                  name: 'myself'
                 })
               } else {
                 this.$router.replace({

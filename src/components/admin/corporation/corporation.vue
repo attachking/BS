@@ -9,19 +9,19 @@
     </el-tabs>
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item label="登记状态">
-        <el-select v-model="registerStatus" placeholder="请选择登记状态">
+        <el-select v-model="registerStatus" placeholder="请选择登记状态" clearable>
           <el-option label="存续" value="1"></el-option>
           <el-option label="注销" value="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="企业类型">
-        <el-select v-model="enterpriseType" placeholder="请选择企业类型">
+        <el-select v-model="enterpriseType" placeholder="请选择企业类型" clearable>
           <el-option label="公司" value="1"></el-option>
           <el-option label="自然人" value="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="企业性质">
-        <el-select v-model="corpNature" placeholder="请选择企业性质">
+        <el-select v-model="corpNature" placeholder="请选择企业性质" clearable>
           <el-option :label="val.parameterOption" :value="val.parameterCode" v-for="(val, key) in dictionaries.corpNature" :key="key"></el-option>
         </el-select>
       </el-form-item>
@@ -162,7 +162,7 @@
         导出企业<i class="el-icon-arrow-down el-icon--right"></i>
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="first">按当前条件导出</el-dropdown-item>
+        <el-dropdown-item command="first">导出全部</el-dropdown-item>
         <!--<el-dropdown-item command="second">导出当前页</el-dropdown-item>-->
         <el-dropdown-item command="third">导出当前页</el-dropdown-item>
       </el-dropdown-menu>

@@ -34,11 +34,6 @@ Vue.use(Router)
 let router = new Router({
   routes: [
     {
-      path: '/',
-      name: 'search',
-      component: search
-    },
-    {
       path: '/shopping',
       name: 'shopping',
       component: shopping
@@ -53,6 +48,10 @@ let router = new Router({
       name: 'manage',
       component: manage,
       children: [{
+        path: 'search',
+        name: 'search',
+        component: search
+      }, {
         path: 'order',
         name: 'order',
         component: order,
@@ -176,7 +175,11 @@ router.beforeEach((to, from, next) => {
     })
   } else if (to.matched.some(record => typeof record.meta.category !== 'undefined' && record.meta.category !== store.state.category)) {
     next({
-      name: store.state.category === 1 ? 'myself' : 'dataview'
+      name: store.state.category === 1 ? 'myself' : 'admin'
+    })
+  } else if (to.path === '/') {
+    next({
+      name: store.state.category === 1 ? 'myself' : 'admin'
     })
   } else {
     next(true)

@@ -132,3 +132,6 @@ ul.el-cascader-menu{
 li.el-select-dropdown__item:hover {
   background-color: #e2e2ed;
 }
+.el-input.is-disabled .el-input__inner{
+  color: #666 !important;
+}

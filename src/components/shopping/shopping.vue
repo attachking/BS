@@ -122,6 +122,7 @@ export default {
   },
   methods: {
     shour(num, money, id) {
+      this.formLabelAlign.type = ''
       this.dialogFormVisible2 = true
       this.userData = {
         name: num,

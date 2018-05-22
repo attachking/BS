@@ -30,11 +30,11 @@ class Event {
     }
     for (let i = 0; i < this._listener[name].length; i++) {
       if (this._listener[name] === fn) {
-        return this
+        return fn
       }
     }
     this._listener[name].push(fn)
-    return this
+    return fn
   }
 
   $off(name, fn) {

@@ -13,9 +13,9 @@
             我的账户
           </div>
           <div class="right">
-            <p><span class="user_right">总条数：</span><span class="color_blue"><grow-num :value="tableData.totalCnt"></grow-num></span> 条</p>
-            <p><span class="user_right">已使用条数：</span><span class="color_blue"><grow-num :value="tableData.authenCnt"></grow-num></span> 条 </p>
-            <p><span class="user_right">剩余条数：</span><span class="color_blue"><grow-num :value="tableData.surplusCnt"></grow-num></span> 条</p>
+            <p><span class="user_right">总条数：</span><span :class="userAssets.serviceTimeEnd ? 'color_yellow' : 'color_blue'"><grow-num :value="tableData.totalCnt"></grow-num></span> 条</p>
+            <p><span class="user_right">已使用条数：</span><span :class="userAssets.serviceTimeEnd ? 'color_yellow' : 'color_blue'"><grow-num :value="tableData.authenCnt"></grow-num></span> 条 </p>
+            <p><span class="user_right">剩余条数：</span><span :class="userAssets.serviceTimeEnd ? 'color_yellow' : 'color_blue'"><grow-num :value="tableData.surplusCnt"></grow-num></span> 条</p>
           </div>
         </div>
       </el-col>
@@ -49,7 +49,8 @@ export default {
   name: 'myself',
   computed: {
     ...mapGetters([
-      'uid'
+      'uid',
+      'userAssets'
     ])
   },
   data() {
@@ -240,7 +241,7 @@ export default {
       var myChart = echarts.init(document.getElementById('user_line'))
       var option = {
         title: {
-          text: '自助认证新增企业趋势图'
+          text: '自主认证新增企业趋势图'
         },
         tooltip: {
           trigger: 'axis',

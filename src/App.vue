@@ -16,12 +16,12 @@
       <template v-if="status === 1">
         <span class="home-top-center" v-if="category === 1 && userAssets.serviceTimeStart">服务时间：{{userAssets.serviceTimeStart}} 至 {{userAssets.serviceTimeEnd}}</span>
         <span class="home-top-center" v-if="category === 1 && !userAssets.serviceTimeStart">
-        总条数：<span class="red">{{userAssets.sumCount || 0}}</span>&nbsp;&nbsp;
-        已使用条数：<span class="red">{{userAssets.authenCount || 0}}</span>&nbsp;&nbsp;
-        剩余条数：<span class="red">{{(userAssets.sumCount || 0) - (userAssets.authenCount || 0)}}</span>
+          总条数：<span class="red"><grow-num :value="userAssets.sumCount || 0"></grow-num></span>&nbsp;&nbsp;
+        已使用条数：<span class="red"><grow-num :value="userAssets.authenCount || 0"></grow-num></span>&nbsp;&nbsp;
+        剩余条数：<span class="red"><grow-num :value="(userAssets.sumCount || 0) - (userAssets.authenCount || 0)"></grow-num></span>
       </span>
         <div class="item" v-if="category === 1">
-          <el-menu-item index="/">首页</el-menu-item>
+          <el-menu-item index="/manage/myself">首页</el-menu-item>
           <el-menu-item index="/shopping">套餐购买</el-menu-item>
           <el-dropdown @command="handleCommand">
           <span class="el-dropdown-link">
@@ -32,6 +32,7 @@
               <el-dropdown-item command="order">我的订单</el-dropdown-item>
               <el-dropdown-item command="invoice">我的发票</el-dropdown-item>
               <el-dropdown-item command="password">修改密码</el-dropdown-item>
+              <el-dropdown-item command="search">认证企业</el-dropdown-item>
               <el-dropdown-item command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -181,6 +182,7 @@ export default {
 
   #app {
     min-width: 1300px;
+    min-height: 800px;
     width: 100%;
     height: 100%;
     padding-top: 55px;

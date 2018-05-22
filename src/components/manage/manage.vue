@@ -101,6 +101,7 @@ export default {
   .tips{
     font-size: 14px;
     padding: 10px 0;
+    word-break: break-all;
     &:not(:last-child){
       border-bottom: 1px solid #d9d9d9;
     }

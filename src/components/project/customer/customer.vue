@@ -40,8 +40,8 @@
         <el-form-item label="客户职位" prop="customerDuty">
           <el-input v-model="form.customerDuty" placeholder="请输入客户职位"></el-input>
         </el-form-item>
-        <el-form-item label="客户电话" prop="customerPhone">
-          <el-input v-model="form.customerPhone" placeholder="请输入客户电话"></el-input>
+        <el-form-item label="客户手机号" prop="customerPhone">
+          <el-input v-model="form.customerPhone" placeholder="请输入客户手机号"></el-input>
         </el-form-item>
         <el-form-item label="客户性别" prop="customerSex">
           <el-radio v-model="form.customerSex" :label="0">男</el-radio>
@@ -395,6 +395,10 @@ export default {
           trigger: 'change'
         }],
         customerPhone: [{
+          required: true,
+          message: '请输入客户手机号',
+          trigger: 'change'
+        }, {
           validator(rule, value, callback) {
             if (/^[1][3,4,5,7,8][0-9]{9}$/.test(value) || value === '') {
               callback()
