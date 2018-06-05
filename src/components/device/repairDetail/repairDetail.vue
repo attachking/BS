@@ -47,7 +47,7 @@
         <span>{{ !!data.isHasFile ? '已上传' : '未上传' }}</span>
       </el-form-item>
       <el-form-item label="工单:">
-        <img :src="data.isHasFile" alt="" v-if="data.isHasFile" class="img">
+        <img :src="data.isHasFile" v-img="data.isHasFile" v-if="data.isHasFile" class="img">
         <span v-if="!data.isHasFile">--</span>
       </el-form-item>
       <br>

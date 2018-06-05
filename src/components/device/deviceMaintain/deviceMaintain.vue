@@ -337,8 +337,8 @@ export default {
           message: '请输入设备名称',
           trigger: 'change'
         }, {
-          max: 20,
-          message: '最多20个字符',
+          max: 30,
+          message: '最多30个字符',
           trigger: 'change'
         }],
         deviceNum: [{

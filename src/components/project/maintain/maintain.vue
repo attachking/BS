@@ -53,6 +53,15 @@
             <el-option :label="item.name" :value="item.code" v-for="item in projectType" :key="item.code"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="所在地区" prop="projectAreaId">
+          <el-cascader
+            placeholder="请选择所在地区"
+            :options="cities"
+            filterable
+            v-model="form.projectAreaId"
+            :props="cascaderFmt"
+          ></el-cascader>
+        </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
           <el-input v-model="form.customerName" placeholder="请输入客户名称" @blur="handleBlur" :disabled="!!form.projectId"></el-input>
         </el-form-item>
@@ -367,8 +376,14 @@ export default {
   mixins: [adminReadableMixin, normalMixin],
   computed: {
     ...mapGetters([
-      'uid'
-    ])
+      'uid',
+      'dictionaries'
+    ]),
+    cities: {
+      get() {
+        return this.dictionaries.cities
+      }
+    }
   },
   data() {
     let _this = this
@@ -395,6 +410,7 @@ export default {
         userId: '', // 用户id
         projectName: '', // 项目名称
         projectType: '', // 项目类别
+        projectAreaId: [], // 地区
         customerName: '', // 客户名称
         customerAccount: '', // 客户账号
         customerSex: 0, // 客户性别
@@ -450,6 +466,11 @@ export default {
         projectType: [{
           required: true,
           message: '请选择项目类别',
+          trigger: 'change'
+        }],
+        projectAreaId: [{
+          required: true,
+          message: '请选择所在地区',
           trigger: 'change'
         }],
         customerName: [{
@@ -555,7 +576,12 @@ export default {
       dialogFormVisible3: false,
       pageBean3: {},
       multipleSelection: [], // 已选择的实施人员
-      selections: []
+      selections: [],
+      cascaderFmt: {
+        value: 'id',
+        label: 'text',
+        children: 'children'
+      }
     }
   },
   methods: {
@@ -603,6 +629,7 @@ export default {
           let obj = Object.assign({}, this.form)
           // obj.deviceOpenTime = dateFormat.call(this.form.deviceOpenTime, 'hh:mm:ss')
           // obj.deviceCloseTime = dateFormat.call(this.form.deviceCloseTime, 'hh:mm:ss')
+          obj.projectAreaId = obj.projectAreaId[obj.projectAreaId.length - 1]
           post('service/business/college/iccProject/iccProject/saveProjectInfo.xf', obj).then(res => {
             this.loading2 = false
             if (res.error.result === 1) {
@@ -669,6 +696,9 @@ export default {
         this.form.customerDuty = detail.customerDuty || ''
         this.form.projectRemark = detail.projectRemark || ''
         this.form.projectId = detail.projectId || ''
+        this.form.projectAreaId = []
+        this.findParentArr(detail.projectAreaId, this.dictionaries.cities)
+        this.backCity(this.parentArr, detail.projectAreaId)
         this.dialogFormVisible = true
         setTimeout(() => {
           this.$refs.form.clearValidate()
@@ -679,6 +709,32 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    backCity(arr, id) { // 地区选择回填
+      if (!id) return
+      this.form.projectAreaId.unshift(id)
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].id === id) {
+          if (arr[i].parentId === '0') {
+            return
+          } else {
+            this.findParentArr(arr[i].parentId, this.dictionaries.cities)
+            this.backCity(this.parentArr, arr[i].parentId)
+          }
+        }
+      }
+    },
+    findParentArr(id, arr) {
+      if (!id) return
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].id === id) {
+          this.parentArr = arr
+        } else {
+          if (arr[i].children && arr[i].children.length) {
+            this.findParentArr(id, arr[i].children)
+          }
+        }
+      }
     },
     getPinyin(str) {
       post('service/business/college/iccUser/iccUser/getUserCode.xf', {
@@ -950,5 +1006,8 @@ export default {
   }
   .service-table{
     margin: 20px 0 0 0;
+  }
+  .el-cascader{
+    width:100%;
   }
 </style>

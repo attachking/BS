@@ -1,6 +1,6 @@
 const product = process.env.NODE_ENV === 'production'
 
-export const BASE_URL = product ? '/' : 'http://192.168.1.248:777/' // http://116.255.207.197:777/  http://192.168.1.192:777/  http://192.168.1.248:777/ https://yw.zhihuijob.com/
+export const BASE_URL = product ? '/' : 'http://192.168.1.248:777/' // https://yw.zhihuijob.com/
 
 export const PAGE_SIZE = 10
 

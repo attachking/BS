@@ -5,6 +5,7 @@ export default {
   install: (Vue) => {
     Vue.directive('img', {
       bind(el, binding, vnode) {
+        $(el).attr('data-url', binding.value)
         $(el).css('cursor', 'pointer')
         el.addEventListener('click', e => {
           if (e && e.stopPropagation) {
@@ -15,7 +16,7 @@ export default {
           const shade = $('<div class="preview-shade"></div>')
           const imgBox = $('<div class="preview-img"></div>')
           const rotate = $('<span class="xffont xf-shuaxin preview-rotate"></span>')
-          const image = $(`<img src="${binding.value}">`)
+          const image = $(`<img src="${el.dataset.url}">`)
           imgBox.append(image).append(rotate)
           $('body').append(shade).append(imgBox)
           imgBox.on('click', () => {
@@ -40,6 +41,9 @@ export default {
             image.css('transform', `rotate(${currentRotate}deg)`)
           })
         }, false)
+      },
+      update(el, binding, vnode) {
+        $(el).attr('data-url', binding.value)
       }
     })
   }

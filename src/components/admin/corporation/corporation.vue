@@ -224,7 +224,7 @@
           <span>{{ currentRow.companyBusinessScope || '--' }}</span>
         </el-form-item>
         <el-form-item label="企业介绍:">
-          <span>{{ currentRow.companyIntroduce || '--' }}</span>
+          <span v-html="currentRow.companyIntroduce || '--'"></span>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -366,6 +366,9 @@ export default {
       post('service/business/college/corp/iccCompany/corpDetails.xf', {
         companyId: row.companyId
       }).then(res => {
+        try {
+          res.result.companyLicenseUrl = decodeURIComponent(res.result.companyLicenseUrl)
+        } catch (err) {}
         this.dialogTableVisible = true
         this.currentRow = res.result
         loading.close()
