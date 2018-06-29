@@ -536,7 +536,7 @@ export default {
       setTimeout(() => {
         let dom = $(document.getElementById('iframe').contentWindow.document)
         arr.forEach(item => {
-          dom.find('body').append(`<img src="${this.getQrCode(item)}" style="margin: 20px 0 0 110px;">`)
+          dom.find('body').append(`<img src="${this.getQrCode(item)}" style="margin: 0 0 0 110px;">`)
         })
         let imgNum = 0
         let error = false
